@@ -5,15 +5,15 @@ reports below is produced by the notebooks, so the work can be reproduced from t
 
 ## At a glance
 - **Part One.** A faint moving source is detected in all 20 frames, at about 5 sigma per raw frame and about 10 sigma after smoothing
-  (difference-image noise 2.9 ADU; only 0.23 false pixels expected by chance). It travels about 28 px along a smooth, slightly curved path,
+  (difference image noise 2.9 ADU; only 0.23 false pixels expected by chance). It travels about 28 px along a smooth, slightly curved path,
   speeding up from 1.35 to 1.64 px/frame; a quadratic fits far better than a straight line (F-test p = 6.5e-16).
 - **Part Two.** Cleaning merged spelling and ordering variants (for example `star_type` 51 to 18 labels, `planet_type` 44 to 11), sent rare
-  one-off labels to `other`, and filled missing gas percentages from the atmosphere string, which agrees with the numeric columns on
+  one off labels to `other`, and filled missing gas percentages from the atmosphere string, which agrees with the numeric columns on
   98-99.9% of rows. Primary hazard explains about 10% of the variance of the settlement index; oxygen is strongly and positively related to it
-  (Spearman rho = 0.57); single-star systems score above binary and triple ones; rings cost about 2.7 points; rogue and tidally locked planets
+  (Spearman rho = 0.57); single star systems score above binary and triple ones; rings cost about 2.7 points; rogue and tidally locked planets
   score about 3 points below the rest. In the independent investigation, temperature and pressure both show Goldilocks optima
   (about 12.5 C and about 1 atm), and together the best region (13.5-28 C, 0.84-1.02 atm) averages 79 against 59 overall.
-- **Bonus.** A gradient-boosting model predicts viability (settlement index >= 60); its hold-out metrics, errors and most important
+- **Bonus.** A gradient boosting model predicts viability (settlement index >= 60); its hold-out metrics, errors and most important
   properties are in the Bonus section below.
 
 ## Repository layout
@@ -52,16 +52,16 @@ There are 20 FITS frames of 200 x 200 pixels (field "EDEN Deep Field 07", 60.0 s
 ![Raw frame 1](llcd_FITS_outputs/raw_frames/frame_01.png)
 
 ### 2. Median reference and difference images
-The reference image is the per-pixel median of all 20 frames (`llcd_FITS_outputs/median_reference.png`). Stars and background sit on the same pixels in every frame, so they pass through the median unchanged, while the moving source occupies any one pixel in only a few frames, so the median rejects it. Subtracting the reference from each frame (and removing the small per-frame background offset) cancels everything static and leaves only what changed in that frame: the moving source as a faint positive blob, plus noise and small residuals around the brightest stars. The difference images are in `llcd_FITS_outputs/difference_images/`, with the tracked source circled in red.
+The reference image is the per pixel median of all 20 frames (`llcd_FITS_outputs/median_reference.png`). Stars and background sit on the same pixels in every frame, so they pass through the median unchanged, while the moving source occupies any one pixel in only a few frames, so the median rejects it. Subtracting the reference from each frame (and removing the small per-frame background offset) cancels everything static and leaves only what changed in that frame: the moving source as a faint positive blob, plus noise and small residuals around the brightest stars. The difference images are in `llcd_FITS_outputs/difference_images/`, with the tracked source circled in red.
 
 ![Median reference](llcd_FITS_outputs/median_reference.png)
 ![Difference image 11](llcd_FITS_outputs/difference_images/diff_11.png)
 
 ### 3. Detecting the moving source
-The noise of each difference image is its sigma-clipped standard deviation (mean 2.90 ADU). Each difference image is smoothed with a 1-pixel Gaussian, which suits a point source and lowers the noise to 0.83 ADU, and every group of at least 2 connected pixels above 5 sigma is a candidate. This gives 23 candidates. They are separated as follows:
+The noise of each difference image is its sigma clipped standard deviation (mean 2.90 ADU). Each difference image is smoothed with a 1-pixel Gaussian, which suits a point source and lowers the noise to 0.83 ADU, and every group of at least 2 connected pixels above 5 sigma is a candidate. This gives 23 candidates. They are separated as follows:
 - **0 static residuals** (imperfectly subtracted stars): a detection that recurs within 2 px of the same spot in more than half of the frames cannot be a moving object.
 - **3 other candidates** (isolated noise peaks): they do not line up with each other or with the track.
-- **20 detections that form one track**: the constant-velocity line matched (within 2 px) by detections in the most frames, whose detections spread over at least 6 px (a stationary residual cannot do that). The source is detected in 20 of 20 frames, one detection per frame.
+- **20 detections that form one track**: the constant velocity line matched (within 2 px) by detections in the most frames, whose detections spread over at least 6 px (a stationary residual cannot do that). The source is detected in 20 of 20 frames, one detection per frame.
 
 ### 4. Trajectory
 Measured centroids and the fitted path (`llcd_trajectory.png`):
@@ -170,11 +170,11 @@ The mean settlement_index is highest for **neither** (59.8, n = 5127) and lowest
 
 ![Screen](llcd_task2_plots/inv_screen.png)
 
-**Result.** The three strongest properties are examined below. "Any-shape" is the variance explained by 12 bin means; a large excess over the monotonic share signals a non-monotonic effect.
+**Result.** The three strongest properties are examined below. "Any shape" is the variance explained by 12 bin means; a large excess over the monotonic share signals a non monotonic effect.
 
 - **mean_temp_c**: any-shape eta squared 37.0% against 0.1% for a monotonic trend (Spearman rho = -0.03); quadratic vs straight line p < 1e-300; the data show an interior optimum (Goldilocks), located at about 12.5 (percentile 50%).
 - **gravity_g**: any-shape eta squared 25.8% against 16.6% for a monotonic trend (Spearman rho = 0.41); quadratic vs straight line p = 9.3e-46; the data show a curved but essentially monotonic relationship (the quadratic's turning point is at or beyond the edge of the data).
-- **atmospheric_pressure_atm**: any-shape eta squared 25.3% against 0.0% for a monotonic trend (Spearman rho = -0.00); quadratic vs straight line p = 1e-285; the data show an interior optimum (Goldilocks), located at about 1.03 (percentile 50%).
+- **atmospheric_pressure_atm**: any shape eta squared 25.3% against 0.0% for a monotonic trend (Spearman rho = -0.00); quadratic vs straight line p = 1e-285; the data show an interior optimum (Goldilocks), located at about 1.03 (percentile 50%).
 
 ![Strongest properties](llcd_task2_plots/inv_top_features.png)
 
@@ -200,28 +200,28 @@ Viewed together, mean_temp_c and atmospheric_pressure_atm give the following pic
 **Conclusion.** The Goldilocks hypothesis is supported for mean_temp_c and atmospheric_pressure_atm: settlement potential is best at intermediate values and falls off on both sides, so a 'more is better' rule would misjudge these properties.
 
 ### Limitations
-Associations, not causes; the properties are correlated with each other (for example gases with planet type), so a trend in one may reflect another. Ten-plus comparisons were run, so a single p-value just under 0.05 should not be over-read. Cleaning choices (merged labels, `other` bucket, imputed values) can move individual group means slightly.
+Associations, not causes; the properties are correlated with each other (for example gases with planet type), so a trend in one may reflect another. Ten plus comparisons were run, so a single p-value just under 0.05 should not be over-read. Cleaning choices (merged labels, `other` bucket, imputed values) can move individual group means slightly.
 
 ---
 
 ## Bonus task: rebuilding EDEN (team llcd)
 
 ### Approach
-A planet is viable when settlement_index >= 60; 42.3% of the 6400 training planets are viable, so always guessing the majority class would score 57.7% accuracy. The model uses the 49 cleaned planet properties (identifiers and the target are excluded; categorical properties are one-hot encoded inside the pipeline; the atmosphere string is parsed into one numeric column per gas, which changed the untuned regressor's validation R^2 from 0.832 to 0.832). Three candidates were compared on a stratified 20% hold-out (1280 planets) that was never used for fitting or tuning: a logistic-regression baseline, a gradient-boosting classifier, and a gradient-boosting regressor that predicts the settlement_index and then applies the >= 60 threshold. The two boosting models were tuned by random search with 3-fold cross-validation on the training part only. The winner by F1 (the task names no metric) was refitted on all 6400 training planets to predict the 1600 test planets.
+A planet is viable when settlement_index >= 60; 42.3% of the 6400 training planets are viable, so always guessing the majority class would score 57.7% accuracy. The model uses the 49 cleaned planet properties (identifiers and the target are excluded; categorical properties are one hot encoded inside the pipeline; the atmosphere string is parsed into one numeric column per gas, which changed the untuned regressor's validation R^2 from 0.832 to 0.832). Three candidates were compared on a stratified 20% hold out (1280 planets) that was never used for fitting or tuning: a logistic regression baseline, a gradient-boosting classifier, and a gradient boosting regressor that predicts the settlement_index and then applies the >= 60 threshold. The two boosting models were tuned by random search with 3 fold cross validation on the training part only. The winner by F1 (the task names no metric) was refitted on all 6400 training planets to predict the 1600 test planets.
 
-### Results on the hold-out planets
+### Results on the hold out planets
 | model | accuracy | precision | recall | F1 | ROC_AUC |
 |---|---|---|---|---|---|
 | Logistic regression | 0.827 | 0.822 | 0.756 | 0.788 | 0.89 |
 | Boosting classifier | 0.87 | 0.859 | 0.83 | 0.844 | 0.94 |
 | Boosting regressor + threshold | 0.882 | 0.872 | 0.845 | 0.858 | 0.944 |
 
-The best model is **Boosting regressor + threshold**. It beats the logistic-regression baseline by 0.071 F1; this is consistent with the non-monotonic (Goldilocks) effects found in Part Two, where intermediate values of properties such as temperature are best: a linear model cannot represent them, whereas tree-based models can. The boosting regressor explains R^2 = 0.84 of the settlement_index on the hold-out planets. Confusion matrix of the best model (rows actual, columns predicted; not viable / viable): [[671, 67], [84, 458]].
+The best model is **Boosting regressor + threshold**. It beats the logistic regression baseline by 0.071 F1; this is consistent with the non monotonic (Goldilocks) effects found in Part Two, where intermediate values of properties such as temperature are best: a linear model cannot represent them, whereas tree based models can. The boosting regressor explains R^2 = 0.84 of the settlement_index on the hold out planets. Confusion matrix of the best model (rows actual, columns predicted; not viable / viable): [[671, 67], [84, 458]].
 
 ![Results](llcd_ml_results.png)
 
 ### Discussion
-- **Where it errs.** 118 of the 151 misclassified hold-out planets (78%) have a true index within 5 points of the threshold, a band that contains 35% of all planets. Accuracy is 73.4% inside that band and 96.1% outside it, so most mistakes are planets that are genuinely borderline.
+- **Where it errs.** 118 of the 151 misclassified hold out planets (78%) have a true index within 5 points of the threshold, a band that contains 35% of all planets. Accuracy is 73.4% inside that band and 96.1% outside it, so most mistakes are planets that are genuinely borderline.
 - **What it relies on.** The properties whose shuffling hurts the score most are: mean_temp_c (0.253), oxygen_percent (0.153), atmospheric_pressure_atm (0.059), water_presence (0.042), gravity_g (0.040), temp_range_c (0.036).
 - **Test predictions.** 41.2% of the 1600 test planets are predicted viable, against 42.3% in the training data.
 
